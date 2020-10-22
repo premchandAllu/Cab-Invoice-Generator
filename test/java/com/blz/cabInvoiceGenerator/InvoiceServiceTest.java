@@ -1,35 +1,39 @@
 package com.blz.cabInvoiceGenerator;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class InvoiceServiceTest {
 
-	InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
+	InvoiceGenerator invoiceGenerator = null;
 
-	@Test
-	public void givenDistanceAndTime() {
-		double distance = 5;
-		double time = 10;
-		double actual = invoiceGenerator.calculateFare(distance, time);
-		Assert.assertEquals(60, actual, 0.0);
+	@Before
+	public void setUp() throws Exception {
+		invoiceGenerator = new InvoiceGenerator();
 	}
 
 	@Test
-	public void givenDistanceAndTimeShouldReturnMinimumFare() {
-		double distance = 0.2;
-		double time = 1;
-		double actual = invoiceGenerator.calculateFare(distance, time);
-		Assert.assertEquals(5, actual, 0.0);
+	public void givenDistanceAndTimeShouldReturnTotalFare() {
+		double distance = 2.5;
+		int time = 10;
+		double fare = invoiceGenerator.calculateFare(distance, time);
+		Assert.assertEquals(35, fare, 0.0);
 	}
-	
+
 	@Test
-	public void givenMultipleRidesReturnAggregateTotalFare() {
+	public void givenLessDistanceAndTimeShouldReturnMinimumFare() {
+		double distance = 0.1;
+		int time = 1;
+		double fare = invoiceGenerator.calculateFare(distance, time);
+		Assert.assertEquals(5, fare, 0.0);
+	}
+
+	@Test
+	public void givenMultipleRidesShouldReturnInvoiceSummary() {
 		Ride[] rides = { new Ride(2.0, 5), new Ride(0.1, 1) };
-		double totalFare = invoiceGenerator.calculateFare(rides);
-		Assert.assertEquals(30, totalFare, 0.0);
+		InvoiceSummary invoiceSummary = invoiceGenerator.calculateFare(rides);
+		InvoiceSummary expectedInvoiceSummary = new InvoiceSummary(2, 30.0);
+		Assert.assertEquals(expectedInvoiceSummary, invoiceSummary);
 	}
-
 }
